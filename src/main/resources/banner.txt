@@ -1,0 +1,8 @@
+
+ ${AnsiColor.RED} ___  ____/_____ _________  /___  ____/_________________  /
+ ${AnsiColor.RED} __  /_   _  __ `/_  ___/  __/_  /_   _  __ \  __ \  __  /
+ ${AnsiColor.RED} _  __/   / /_/ /_(__  )/ /_ _  __/   / /_/ / /_/ / /_/ /
+ ${AnsiColor.RED} /_/      \__,_/ /____/ \__/ /_/      \____/\____/\__,_/
+
+
+${AnsiColor.BRIGHT_RED}:: SOAT10 - Tech Challenge 01 - Grupo 13 🤓  :: Running Spring Boot ${spring-boot.version} ::

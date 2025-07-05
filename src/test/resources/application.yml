@@ -1,0 +1,14 @@
+app:
+  name: FastFood
+  mercadopagotoken: ${MERCADO_PAGO_TOKEN:123}
+  url: ${APPLICATION_URL:http://127.0.0.1:8080}
+spring:
+  application:
+    name: fastfood
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jpa:
+    hibernate:
+      ddl-auto: none # Flyway gerencia
+    show-sql: true
