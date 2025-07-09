@@ -4,16 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       app_name:
-        description: 'Nome da aplicação (ex: cadastros, pedidos, pagamentos)'
+        description: 'Fastfood Pedidos'
         required: true
+        default: fastfood-pedido
       deploy:
         description: 'Fazer deploy após build?'
         required: false
         default: 'false'
 
   push:
-    tags:
-      - 'v*'
+    branches:
+      - '**'   # todas as branches
 
 jobs:
   build-and-push:
