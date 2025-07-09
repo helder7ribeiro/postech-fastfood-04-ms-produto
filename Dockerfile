@@ -1,4 +1,4 @@
-zFROM eclipse-temurin:21-jre AS runtime
+FROM eclipse-temurin:21-jre AS runtime
 
 WORKDIR /app
 
