@@ -50,10 +50,10 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -f run/Dockerfile \
+          docker build \
             -t ${{ secrets.DOCKER_USERNAME }}/${{ steps.vars.outputs.app_name }}:${{ steps.vars.outputs.tag }} \
             .
-
+          
           docker tag ${{ secrets.DOCKER_USERNAME }}/${{ steps.vars.outputs.app_name }}:${{ steps.vars.outputs.tag }} \
             ${{ secrets.DOCKER_USERNAME }}/${{ steps.vars.outputs.app_name }}:latest
 
