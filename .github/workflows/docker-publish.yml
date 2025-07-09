@@ -14,13 +14,14 @@ on:
 
   push:
     branches:
-      - '**'   # todas as branches
+      - '**'
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.vars.outputs.version }}
+      tag: ${{ steps.vars.outputs.tag }}
+      app_name: ${{ steps.vars.outputs.app_name }}
 
     steps:
       - name: Checkout código
@@ -35,26 +36,35 @@ jobs:
       - name: Build com Maven
         run: mvn clean package -DskipTests
 
-      - name: Extrair versão da tag
+      - name: Definir app_name e tag segura
         id: vars
-        run: echo "version=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+        run: |
+          APP_NAME="${{ github.event.inputs.app_name || 'fastfood-pedido' }}"
+          RAW_TAG="${GITHUB_REF##*/}"
+          SAFE_TAG=$(echo "$RAW_TAG" | tr '/' '-' | tr ':' '-' | tr ' ' '-')
+          echo "tag=$SAFE_TAG" >> $GITHUB_OUTPUT
+          echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
 
       - name: Login no Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker image
         run: |
-          docker build -f run/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/${{ github.event.inputs.app_name }}:${{ steps.vars.outputs.version }} .
-          docker tag ${{ secrets.DOCKER_USERNAME }}/${{ github.event.inputs.app_name }}:${{ steps.vars.outputs.version }} ${{ secrets.DOCKER_USERNAME }}/${{ github.event.inputs.app_name }}:latest
+          docker build -f run/Dockerfile \
+            -t ${{ secrets.DOCKER_USERNAME }}/${{ steps.vars.outputs.app_name }}:${{ steps.vars.outputs.tag }} \
+            .
+
+          docker tag ${{ secrets.DOCKER_USERNAME }}/${{ steps.vars.outputs.app_name }}:${{ steps.vars.outputs.tag }} \
+            ${{ secrets.DOCKER_USERNAME }}/${{ steps.vars.outputs.app_name }}:latest
 
       - name: Push Docker images
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/${{ github.event.inputs.app_name }}:${{ steps.vars.outputs.version }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/${{ github.event.inputs.app_name }}:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ steps.vars.outputs.app_name }}:${{ steps.vars.outputs.tag }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ steps.vars.outputs.app_name }}:latest
 
   deploy:
     if: ${{ github.event.inputs.deploy == 'true' }}
     needs: build-and-push
     uses: ./.github/workflows/deploy.yml
     with:
-      app_name: ${{ github.event.inputs.app_name }}
+      app_name: ${{ needs.build-and-push.outputs.app_name }}
