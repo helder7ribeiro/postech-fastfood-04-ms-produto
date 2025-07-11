@@ -94,11 +94,11 @@ jobs:
 
       - name: Substituir variáveis no deployment
         run: |
-          sed -i "s|\${DOCKER_USERNAME}|${{ secrets.DOCKER_USERNAME }}|g" k8s/app/app-deployment.yml
-          sed -i "s|\${APP_NAME}|${{ env.APP_NAME }}|g" k8s/app/app-deployment.yml
+          sed -i "s|\${DOCKER_USERNAME}|${{ secrets.DOCKER_USERNAME }}|g" k8s/app-deployment.yml
+          sed -i "s|\${APP_NAME}|${{ env.APP_NAME }}|g" k8s/app-deployment.yml
 
       - name: Aplicar deployment
-        run: kubectl apply -f k8s/app/
+        run: kubectl apply -f k8s
 
       - name: Verificar rollout
         run: |
