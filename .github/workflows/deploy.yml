@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
     inputs:
       app_name:
-        description: 'Fastfood Pedidos'
+        description: 'App name'
         required: true
-        default: fastfood-pedido
+        default: fastfood-produto
 
 jobs:
   deploy-on-eks:

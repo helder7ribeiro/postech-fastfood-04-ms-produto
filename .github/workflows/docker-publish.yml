@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       app_name:
-        description: 'Fastfood Pedidos'
+        description: 'App name'
         required: true
-        default: fastfood-pedido
+        default: fastfood-produto
       deploy:
         description: 'Fazer deploy após build?'
         required: false
@@ -45,7 +45,7 @@ jobs:
       - name: Definir app_name e tag segura
         id: vars
         run: |
-          APP_NAME="${{ github.event.inputs.app_name || 'fastfood-pedido' }}"
+          APP_NAME="${{ github.event.inputs.app_name || 'fastfood-produto' }}"
           RAW_TAG="${GITHUB_REF##*/}"
           SAFE_TAG=$(echo "$RAW_TAG" | tr '/' '-' | tr ':' '-' | tr ' ' '-')
           echo "tag=$SAFE_TAG" >> $GITHUB_OUTPUT
