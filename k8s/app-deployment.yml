@@ -21,7 +21,7 @@ spec:
       containers:
         - name: ${APP_NAME}
           image: ${DOCKER_USERNAME}/${APP_NAME}:latest
-          imagePullPolicy: Never
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
