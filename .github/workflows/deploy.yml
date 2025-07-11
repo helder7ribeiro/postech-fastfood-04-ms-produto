@@ -29,6 +29,22 @@ jobs:
         with:
           version: 'latest'
 
+      - name: Validar AWS Secrets
+        run: |
+          echo "🔐 Validando AWS Secrets..."
+
+          [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ] && echo "❌ AWS_ACCESS_KEY_ID está vazio" && exit 1
+          [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ] && echo "❌ AWS_SECRET_ACCESS_KEY está vazio" && exit 1
+
+          echo "✅ AWS_ACCESS_KEY_ID e SECRET estão presentes."
+
+          # Apenas se estiver usando sessão temporária (STS)
+          if [ "${{ secrets.AWS_SESSION_TOKEN }}" != "" ]; then
+            echo "ℹ️ AWS_SESSION_TOKEN também está presente (usando STS)."
+          else
+            echo "ℹ️ AWS_SESSION_TOKEN está vazio (não usando STS)."
+          fi
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -36,6 +52,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
+
+      - name: Testar autenticação AWS com sts get-caller-identity
+        run: |
+          aws sts get-caller-identity
 
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --name eks-cluster --region us-east-1
