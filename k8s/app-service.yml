@@ -6,7 +6,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: fastfood-pedido
+    app: fastfood-produto
   ports:
     - name: http
       port: 80
