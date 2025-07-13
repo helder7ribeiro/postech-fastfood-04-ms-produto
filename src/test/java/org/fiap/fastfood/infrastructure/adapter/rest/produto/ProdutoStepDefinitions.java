@@ -58,17 +58,14 @@ public class ProdutoStepDefinitions {
 
     @Dado("que não existe um produto com nome {string}")
     public void queNaoExisteUmProdutoComNome(String nome) {
-        // Limpar produtos com o nome especificado
         produtoRepositoryJpa.deleteAll();
         nomeProdutoAtual = nome;
     }
 
     @Quando("eu crio um produto com nome {string} e preço {double}")
     public void euCrioUmProdutoComNomeEPreco(String nome, double preco) throws Exception {
-        // Criar categoria primeiro
         categoriaAtual = testFixtureUtil.criarCategoriaEntity();
-        
-        // Criar request para registrar produto
+
         RegistrarProdutoRequest request = new RegistrarProdutoRequest(
             nome, 
             "Descrição do " + nome, 
@@ -78,14 +75,12 @@ public class ProdutoStepDefinitions {
 
         String jsonRequest = objectMapper.writeValueAsString(request);
 
-        // Fazer requisição POST
         ultimaResposta = mvc.perform(
             MockMvcRequestBuilders.post(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonRequest)
         ).andReturn().getResponse();
 
-        // Se criado com sucesso, buscar o produto criado
         if (ultimaResposta.getStatus() == 201) {
             JsonNode responseNode = objectMapper.readTree(ultimaResposta.getContentAsString());
             Integer produtoId = responseNode.get("id").asInt();
@@ -102,7 +97,6 @@ public class ProdutoStepDefinitions {
 
     @Dado("que existe um produto com nome {string}")
     public void queExisteUmProdutoComNome(String nome) {
-        // Criar categoria e produto
         categoriaAtual = testFixtureUtil.criarCategoriaEntity();
         produtoAtual = new ProdutoEntity();
         produtoAtual.setNome(nome);
@@ -115,7 +109,6 @@ public class ProdutoStepDefinitions {
 
     @Quando("eu busco o produto pelo nome {string}")
     public void euBuscoOProdutoPeloNome(String nome) throws Exception {
-        // Buscar produto pelo ID (já que não temos endpoint por nome)
         ultimaResposta = mvc.perform(
             MockMvcRequestBuilders.get(ENDPOINT + "/" + produtoAtual.getId())
         ).andReturn().getResponse();
@@ -136,7 +129,6 @@ public class ProdutoStepDefinitions {
 
     @Quando("eu atualizo o preço do produto para {double}")
     public void euAtualizoOPrecoDoProdutoPara(double preco) throws Exception {
-        // Criar request para atualizar produto
         AtualizarProdutoRequest request = new AtualizarProdutoRequest(
             produtoAtual.getNome(),
             produtoAtual.getDescricao(),
@@ -146,7 +138,6 @@ public class ProdutoStepDefinitions {
 
         String jsonRequest = objectMapper.writeValueAsString(request);
 
-        // Fazer requisição PUT
         ultimaResposta = mvc.perform(
             MockMvcRequestBuilders.put(ENDPOINT + "/" + produtoAtual.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -157,8 +148,7 @@ public class ProdutoStepDefinitions {
     @Entao("o produto deve refletir o novo preço")
     public void oProdutoDeveRefletirONovoPreco() {
         assertThat(ultimaResposta.getStatus()).isEqualTo(200);
-        
-        // Verificar se o produto foi atualizado no banco
+
         Optional<ProdutoEntity> produtoAtualizado = produtoRepositoryJpa.findById(produtoAtual.getId());
         assertThat(produtoAtualizado).isPresent();
         assertThat(produtoAtualizado.get().getPreco()).isEqualTo(BigDecimal.valueOf(25.00).setScale(2, RoundingMode.CEILING));
@@ -166,7 +156,6 @@ public class ProdutoStepDefinitions {
 
     @Quando("eu removo o produto")
     public void euRemovoOProduto() throws Exception {
-        // Fazer requisição DELETE
         ultimaResposta = mvc.perform(
             MockMvcRequestBuilders.delete(ENDPOINT + "/" + produtoAtual.getId())
         ).andReturn().getResponse();
@@ -175,8 +164,7 @@ public class ProdutoStepDefinitions {
     @Entao("o produto não deve mais existir")
     public void oProdutoNaoDeveMaisExistir() {
         assertThat(ultimaResposta.getStatus()).isEqualTo(200);
-        
-        // Verificar se o produto foi removido do banco
+
         Optional<ProdutoEntity> produtoRemovido = produtoRepositoryJpa.findById(produtoAtual.getId());
         assertThat(produtoRemovido).isEmpty();
     }
