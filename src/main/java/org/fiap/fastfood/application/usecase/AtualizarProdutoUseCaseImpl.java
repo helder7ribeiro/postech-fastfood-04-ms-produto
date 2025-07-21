@@ -12,6 +12,6 @@ public class AtualizarProdutoUseCaseImpl implements AtualizarProdutoUseCase {
 
     @Override
     public Produto execute(Produto produto) {
-        return manterProduto.update(produto);
+        return manterProduto.createOrUpdate(produto);
     }
 }

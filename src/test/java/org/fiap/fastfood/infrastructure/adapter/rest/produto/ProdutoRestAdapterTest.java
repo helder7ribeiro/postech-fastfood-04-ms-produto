@@ -1,9 +1,6 @@
 package org.fiap.fastfood.infrastructure.adapter.rest.produto;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fiap.fastfood.infrastructure.adapter.persistence.entity.CategoriaEntity;
-
 import org.fiap.fastfood.infrastructure.adapter.persistence.entity.ProdutoEntity;
 import org.fiap.fastfood.infrastructure.adapter.persistence.repository.CategoriaRepositoryJpa;
 import org.fiap.fastfood.infrastructure.adapter.persistence.repository.ProdutoRepositoryJpa;
@@ -36,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ActiveProfiles("test")
 class ProdutoRestAdapterTest {
 
-    private final String ENDPOINT = "/api/v1/produtos";
+    private static final String ENDPOINT = "/api/v1/produtos";
 
     @Autowired
     private MockMvc mvc;
@@ -114,8 +111,6 @@ class ProdutoRestAdapterTest {
     void testFindByCategoryId() throws Exception {
         // Given
         CategoriaEntity categoriaEntity = testFixtureUtil.criarCategoriaEntity();
-        ProdutoEntity produtoEntity1 = testFixtureUtil.criarProdutoEntity(categoriaEntity);
-        ProdutoEntity produtoEntity2 = testFixtureUtil.criarProdutoEntity(categoriaEntity);
 
         // When
         MockHttpServletResponse response = mvc.perform(get(ENDPOINT + "/find-by-category/" + categoriaEntity.getId())).andReturn().getResponse();

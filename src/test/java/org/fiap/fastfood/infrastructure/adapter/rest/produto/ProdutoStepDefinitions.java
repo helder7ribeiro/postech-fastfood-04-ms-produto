@@ -3,8 +3,8 @@ package org.fiap.fastfood.infrastructure.adapter.rest.produto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.pt.Dado;
-import io.cucumber.java.pt.Quando;
 import io.cucumber.java.pt.Entao;
+import io.cucumber.java.pt.Quando;
 import org.fiap.fastfood.infrastructure.adapter.persistence.entity.CategoriaEntity;
 import org.fiap.fastfood.infrastructure.adapter.persistence.entity.ProdutoEntity;
 import org.fiap.fastfood.infrastructure.adapter.persistence.repository.CategoriaRepositoryJpa;
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ActiveProfiles("test")
 public class ProdutoStepDefinitions {
 
-    private final String ENDPOINT = "/api/v1/produtos";
+    private static final String ENDPOINT = "/api/v1/produtos";
 
     @Autowired
     private MockMvc mvc;

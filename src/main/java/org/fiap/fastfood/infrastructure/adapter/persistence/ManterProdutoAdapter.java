@@ -20,7 +20,7 @@ public class ManterProdutoAdapter implements ManterProduto {
 
     @Override
     @Transactional
-    public Produto create(Produto produto) {
+    public Produto createOrUpdate(Produto produto) {
         ProdutoEntity entity = produtoPersistenceMapper.toEntity(produto);
         entity = produtoRepositoryJpa.save(entity);
         return produtoPersistenceMapper.toDomain(entity);
@@ -42,14 +42,6 @@ public class ManterProdutoAdapter implements ManterProduto {
     public List<Produto> findByCategoryId(Integer categoryId) {
         List<ProdutoEntity> produtoEntityList = produtoRepositoryJpa.findByCategoriaId(categoryId);
         return produtoEntityList.stream().map(produtoPersistenceMapper::toDomain).toList();
-    }
-
-    @Override
-    @Transactional
-    public Produto update(Produto produto) {
-        ProdutoEntity entity = produtoPersistenceMapper.toEntity(produto);
-        entity = produtoRepositoryJpa.save(entity);
-        return produtoPersistenceMapper.toDomain(entity);
     }
 
     @Override
