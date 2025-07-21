@@ -34,5 +34,6 @@ jobs:
         run: |
           mvn sonar:sonar \
             -Dsonar.projectKey=postech-fastfood-04-ms-produto \
+            -Dsonar.organization=helder7ribeiro \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN
