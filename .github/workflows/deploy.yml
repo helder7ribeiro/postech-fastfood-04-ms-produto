@@ -1,0 +1,109 @@
+name: CD - Deploy no EKS
+
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: 'App name'
+        required: true
+        default: fastfood-produto
+
+jobs:
+  deploy-on-eks:
+    runs-on: ubuntu-latest
+    env:
+      APP_NAME: ${{ inputs.app_name != '' && inputs.app_name || github.event.inputs.app_name }}
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Validar AWS Secrets
+        run: |
+          echo "🔐 Validando AWS Secrets..."
+
+          [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ] && echo "❌ AWS_ACCESS_KEY_ID está vazio" && exit 1
+          [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ] && echo "❌ AWS_SECRET_ACCESS_KEY está vazio" && exit 1
+
+          echo "✅ AWS_ACCESS_KEY_ID e SECRET estão presentes."
+
+          # Apenas se estiver usando sessão temporária (STS)
+          if [ "${{ secrets.AWS_SESSION_TOKEN }}" != "" ]; then
+            echo "ℹ️ AWS_SESSION_TOKEN também está presente (usando STS)."
+          else
+            echo "ℹ️ AWS_SESSION_TOKEN está vazio (não usando STS)."
+          fi
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
+
+      - name: Testar autenticação AWS com sts get-caller-identity
+        run: |
+          aws sts get-caller-identity
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name eks-cluster --region us-east-1
+
+      - name: Deploy namespace
+        run: kubectl apply -f k8s/namespace.yml
+
+      - name: Criar secrets do banco
+        run: |
+          kubectl create secret generic db-credentials \
+            --from-literal=POSTGRES_USER="${{ secrets.DB_USERNAME }}" \
+            --from-literal=POSTGRES_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            --from-literal=POSTGRES_DB="${{ secrets.DB_NAME }}" \
+            --from-literal=SPRING_DATASOURCE_URL="${{ secrets.SPRING_DATASOURCE_URL }}" \
+            -n fastfood \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Criar segredo do Cognito a partir dos GitHub Secrets
+        run: |
+          kubectl create secret generic cognito-config \
+            --from-literal=AWS_COGNITO_APP_CLIENT_ID="${{ secrets.AWS_COGNITO_APP_CLIENT_ID }}" \
+            --from-literal=AWS_COGNITO_ISSUER_URI="${{ secrets.AWS_COGNITO_ISSUER_URI }}" \
+            --from-literal=AWS_COGNITO_JWK_URI="${{ secrets.AWS_COGNITO_JWK_URI }}" \
+            --from-literal=AWS_COGNITO_REGION="${{ secrets.AWS_COGNITO_REGION }}" \
+            --from-literal=AWS_COGNITO_USER_POOL_ID="${{ secrets.AWS_COGNITO_USER_POOL_ID }}" \
+            -n fastfood \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Criar segredo do Mercado Pago a partir dos GitHub Secrets
+        run: |
+          kubectl create secret generic mercado-pago-credentials \
+            --from-literal=MERCADO_PAGO_PUBLIC_KEY="${{ secrets.MERCADO_PAGO_PUBLIC_KEY }}" \
+            --from-literal=MERCADO_PAGO_ACCESS_TOKEN="${{ secrets.MERCADO_PAGO_ACCESS_TOKEN }}" \
+            -n fastfood \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Substituir variáveis no deployment
+        run: |
+          sed -i "s|\${DOCKER_USERNAME}|${{ secrets.DOCKER_USERNAME }}|g" k8s/app-deployment.yml
+          sed -i "s|\${APP_NAME}|${{ env.APP_NAME }}|g" k8s/app-deployment.yml
+
+      - name: Aplicar deployment
+        run: kubectl apply -f k8s
+
+      - name: Verificar rollout
+        run: |
+          kubectl rollout status deployment/${{ env.APP_NAME }}-deployment -n fastfood
+
+      - name: Verificar serviço
+        run: |
+          kubectl get svc ${{ env.APP_NAME }}-app -n fastfood || true

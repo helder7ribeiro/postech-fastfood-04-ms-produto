@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastfood-produto
+  namespace: fastfood
+spec:
+  type: LoadBalancer
+  selector:
+    app: fastfood-produto
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

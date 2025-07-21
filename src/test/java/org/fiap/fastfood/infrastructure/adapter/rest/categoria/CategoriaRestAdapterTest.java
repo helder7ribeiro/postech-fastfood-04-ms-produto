@@ -2,6 +2,7 @@ package org.fiap.fastfood.infrastructure.adapter.rest.categoria;
 
 import org.fiap.fastfood.infrastructure.adapter.persistence.entity.CategoriaEntity;
 import org.fiap.fastfood.infrastructure.adapter.persistence.repository.CategoriaRepositoryJpa;
+import org.fiap.fastfood.infrastructure.adapter.persistence.repository.ProdutoRepositoryJpa;
 import org.fiap.fastfood.infrastructure.adapter.rest.categoria.dto.AtualizarCategoriaRequest;
 import org.fiap.fastfood.infrastructure.adapter.rest.categoria.dto.RegistrarCategoriaRequest;
 import org.fiap.fastfood.util.TestFixtureUtil;
@@ -44,6 +45,9 @@ class CategoriaRestAdapterTest {
     private CategoriaRepositoryJpa categoriaRepository;
 
     @Autowired
+    private ProdutoRepositoryJpa produtoRepository;
+
+    @Autowired
     private JacksonTester<RegistrarCategoriaRequest> registrarCategoriaRequestJacksonTester;
 
     @Autowired
@@ -51,6 +55,7 @@ class CategoriaRestAdapterTest {
 
     @BeforeEach
     void beforeAll() {
+        produtoRepository.deleteAll();
         categoriaRepository.deleteAll();
     }
 
