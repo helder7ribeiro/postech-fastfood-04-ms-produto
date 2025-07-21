@@ -18,7 +18,7 @@ public class ManterCategoriaAdapter implements ManterCategoria {
 
     @Override
     @Transactional
-    public Categoria create(Categoria categoria) {
+    public Categoria createOrUpdate(Categoria categoria) {
         CategoriaEntity entity = categoriaPersistenceMapper.toEntity(categoria);
         entity = categoriaRepositoryJpa.save(entity);
         return categoriaPersistenceMapper.toDomain(entity);
@@ -33,14 +33,6 @@ public class ManterCategoriaAdapter implements ManterCategoria {
     @Override
     public Categoria findById(Integer id) {
         CategoriaEntity entity = categoriaRepositoryJpa.findById(id).orElseThrow();
-        return categoriaPersistenceMapper.toDomain(entity);
-    }
-
-    @Override
-    @Transactional
-    public Categoria update(Categoria categoria) {
-        CategoriaEntity entity = categoriaPersistenceMapper.toEntity(categoria);
-        entity = categoriaRepositoryJpa.save(entity);
         return categoriaPersistenceMapper.toDomain(entity);
     }
 

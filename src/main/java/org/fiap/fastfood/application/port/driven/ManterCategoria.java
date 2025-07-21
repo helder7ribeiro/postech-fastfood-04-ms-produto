@@ -6,13 +6,11 @@ import java.util.List;
 
 public interface ManterCategoria {
 
-    Categoria create(Categoria categoria);
+    Categoria createOrUpdate(Categoria categoria);
 
     List<Categoria> findAll();
 
     Categoria findById(Integer id);
-
-    Categoria update(Categoria categoria);
 
     void delete(Integer id);
 

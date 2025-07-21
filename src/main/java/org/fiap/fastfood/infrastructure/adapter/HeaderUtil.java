@@ -20,7 +20,8 @@ public final class HeaderUtil {
 
         try {
             headers.add("X-" + applicationName + "-params", URLEncoder.encode(param, StandardCharsets.UTF_8.toString()));
-        } catch (UnsupportedEncodingException var5) {
+        } catch (UnsupportedEncodingException ignored) {
+            // ignored
         }
 
         return headers;

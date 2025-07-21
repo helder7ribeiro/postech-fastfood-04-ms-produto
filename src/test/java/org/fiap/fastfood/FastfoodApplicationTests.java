@@ -8,6 +8,7 @@ class FastfoodApplicationTests {
 
     @Test
     void contextLoads() {
+        // context loads
     }
 
 }

@@ -3,11 +3,7 @@ package org.fiap.fastfood.infrastructure.adapter.rest.produto.mapper;
 import org.fiap.fastfood.domain.model.Categoria;
 import org.fiap.fastfood.domain.model.Produto;
 import org.fiap.fastfood.infrastructure.adapter.rest.categoria.mapper.CategoriaRestMapper;
-import org.fiap.fastfood.infrastructure.adapter.rest.produto.dto.AtualizarProdutoRequest;
-import org.fiap.fastfood.infrastructure.adapter.rest.produto.dto.AtualizarProdutoResponse;
-import org.fiap.fastfood.infrastructure.adapter.rest.produto.dto.ListarProdutoResponse;
-import org.fiap.fastfood.infrastructure.adapter.rest.produto.dto.RegistrarProdutoRequest;
-import org.fiap.fastfood.infrastructure.adapter.rest.produto.dto.RegistrarProdutoResponse;
+import org.fiap.fastfood.infrastructure.adapter.rest.produto.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
