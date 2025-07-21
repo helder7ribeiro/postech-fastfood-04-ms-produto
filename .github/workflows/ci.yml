@@ -20,5 +20,20 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Setup Maven
+        uses: s4u/setup-maven-action@v1.11.0
+        with:
+          java-version: 21
+
       - name: Build com Maven e rodar testes
         run: mvn clean verify
+
+      - name: SonarQube Scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn sonar:sonar \
+            -Dsonar.projectKey=helder7ribeiro_postech-fastfood-04-ms-produto \
+            -Dsonar.organization=helder7ribeiro \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=$SONAR_TOKEN
