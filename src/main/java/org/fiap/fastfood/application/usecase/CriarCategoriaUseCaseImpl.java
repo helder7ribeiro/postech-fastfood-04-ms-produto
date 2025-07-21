@@ -12,7 +12,7 @@ public class CriarCategoriaUseCaseImpl implements CriarCategoriaUseCase {
 
     @Override
     public Categoria execute(Categoria categoria) {
-        return manterCategoria.create(categoria);
+        return manterCategoria.createOrUpdate(categoria);
     }
 
 }

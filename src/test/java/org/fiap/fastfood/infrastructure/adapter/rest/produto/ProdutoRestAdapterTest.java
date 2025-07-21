@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ActiveProfiles("test")
 class ProdutoRestAdapterTest {
 
-    private final String ENDPOINT = "/api/v1/produtos";
+    private static final String ENDPOINT = "/api/v1/produtos";
 
     @Autowired
     private MockMvc mvc;
@@ -114,8 +114,6 @@ class ProdutoRestAdapterTest {
     void testFindByCategoryId() throws Exception {
         // Given
         CategoriaEntity categoriaEntity = testFixtureUtil.criarCategoriaEntity();
-        ProdutoEntity produtoEntity1 = testFixtureUtil.criarProdutoEntity(categoriaEntity);
-        ProdutoEntity produtoEntity2 = testFixtureUtil.criarProdutoEntity(categoriaEntity);
 
         // When
         MockHttpServletResponse response = mvc.perform(get(ENDPOINT + "/find-by-category/" + categoriaEntity.getId())).andReturn().getResponse();

@@ -6,15 +6,13 @@ import java.util.List;
 
 public interface ManterProduto {
 
-    Produto create(Produto produto);
+    Produto createOrUpdate(Produto produto);
 
     List<Produto> findAll();
 
     Produto findById(Integer id);
 
     List<Produto> findByCategoryId(Integer categoryId);
-
-    Produto update(Produto produto);
 
     void delete(Integer id);
 

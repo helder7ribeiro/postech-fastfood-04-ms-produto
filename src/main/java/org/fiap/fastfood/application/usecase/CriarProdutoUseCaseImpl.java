@@ -12,7 +12,7 @@ public class CriarProdutoUseCaseImpl implements CriarProdutoUseCase {
 
     @Override
     public Produto execute(Produto produto) {
-        return manterProduto.create(produto);
+        return manterProduto.createOrUpdate(produto);
     }
 
 }

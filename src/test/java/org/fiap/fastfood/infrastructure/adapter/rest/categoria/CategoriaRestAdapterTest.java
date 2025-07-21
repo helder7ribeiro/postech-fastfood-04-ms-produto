@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ActiveProfiles("test")
 class CategoriaRestAdapterTest {
 
-    private final String ENDPOINT = "/api/v1/categorias";
+    private static final String ENDPOINT = "/api/v1/categorias";
 
     @Autowired
     private MockMvc mvc;

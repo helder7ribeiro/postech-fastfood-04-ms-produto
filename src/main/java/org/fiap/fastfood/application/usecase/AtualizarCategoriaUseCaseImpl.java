@@ -12,7 +12,7 @@ public class AtualizarCategoriaUseCaseImpl implements AtualizarCategoriaUseCase 
 
     @Override
     public Categoria execute(Categoria categoria) {
-        return manterCategoria.update(categoria);
+        return manterCategoria.createOrUpdate(categoria);
     }
 
 }

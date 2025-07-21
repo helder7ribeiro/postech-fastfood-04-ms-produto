@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ActiveProfiles("test")
 public class ProdutoStepDefinitions {
 
-    private final String ENDPOINT = "/api/v1/produtos";
+    private static final String ENDPOINT = "/api/v1/produtos";
 
     @Autowired
     private MockMvc mvc;
