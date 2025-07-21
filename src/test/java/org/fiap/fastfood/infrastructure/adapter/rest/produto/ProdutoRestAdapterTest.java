@@ -1,9 +1,6 @@
 package org.fiap.fastfood.infrastructure.adapter.rest.produto;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fiap.fastfood.infrastructure.adapter.persistence.entity.CategoriaEntity;
-
 import org.fiap.fastfood.infrastructure.adapter.persistence.entity.ProdutoEntity;
 import org.fiap.fastfood.infrastructure.adapter.persistence.repository.CategoriaRepositoryJpa;
 import org.fiap.fastfood.infrastructure.adapter.persistence.repository.ProdutoRepositoryJpa;
